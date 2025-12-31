@@ -1,38 +1,58 @@
 # Figma Clone
 
-A React + TypeScript project built with Vite.
+A minimal Figma-like design tool built with React, TypeScript, and HTML5 Canvas.
 
-## Prerequisites
+## Features
 
-This project uses [Bun](https://bun.sh/) as the package manager and runtime.
+- **Drawing Tools**: Rectangle and ellipse shapes
+- **Selection & Transform**: Click to select, drag to move, corner handles to resize
+- **Viewport Controls**: Zoom (Cmd/Ctrl + scroll), pan (Space + drag)
+- **Undo/Redo**: Full history support via Zustand temporal middleware
+- **Color Picker**: Change fill color of selected shapes
+
+## Keyboard Shortcuts
+
+| Action | Shortcut |
+|--------|----------|
+| Select tool | `V` |
+| Rectangle tool | `R` |
+| Ellipse tool | `O` |
+| Delete shape | `Delete` / `Backspace` |
+| Duplicate | `Cmd/Ctrl + D` |
+| Undo | `Cmd/Ctrl + Z` |
+| Redo | `Cmd/Ctrl + Shift + Z` |
+| Pan canvas | `Space + Drag` |
+| Zoom | `Cmd/Ctrl + Scroll` |
+
+## Tech Stack
+
+- **Runtime**: [Bun](https://bun.sh/)
+- **Framework**: React 19 + TypeScript
+- **State**: [Zustand](https://zustand.docs.pmnd.rs/) + [zundo](https://github.com/charkour/zundo)
+- **Styling**: Tailwind CSS v4 + shadcn/ui
+- **Build**: Vite
 
 ## Tooling
 
-| Tool | Purpose | Speed |
-|------|---------|-------|
-| [tsgo](https://github.com/microsoft/typescript-go) | TypeScript type checking | ~10x faster than tsc |
-| [oxlint](https://oxc.rs/docs/guide/usage/linter) | Linting | ~50-100x faster than ESLint |
-| [oxfmt](https://oxc.rs/docs/guide/usage/formatter) | Code formatting | ~30x faster than Prettier |
-| [Vite](https://vite.dev/) | Dev server & bundling | Native ESM, instant HMR |
+| Tool | Purpose |
+|------|---------|
+| [tsgo](https://github.com/microsoft/typescript-go) | TypeScript type checking (~10x faster than tsc) |
+| [oxlint](https://oxc.rs/docs/guide/usage/linter) | Linting (~50-100x faster than ESLint) |
+| [oxfmt](https://oxc.rs/docs/guide/usage/formatter) | Code formatting (~30x faster than Prettier) |
 
 ## Getting Started
 
 ```bash
-# Install dependencies
 bun install
-
-# Start development server
 bun run dev
+```
 
-# Build for production
-bun run build
+## Scripts
 
-# Preview production build
-bun run preview
-
-# Lint code
-bun run lint
-
-# Format code
-bun run format
+```bash
+bun run dev      # Start dev server
+bun run build    # Build for production
+bun run preview  # Preview production build
+bun run lint     # Lint code
+bun run format   # Format code
 ```

@@ -1,6 +1,12 @@
 import { useRef, useEffect, useCallback, useState } from "react";
 import { useCanvasStore } from "@/store";
 import type { Shape, Point } from "@/types";
+import {
+  screenToCanvas as screenToCanvasUtil,
+  getShapeAtPoint,
+  getResizeHandle as getResizeHandleUtil,
+  normalizeShape,
+} from "@/lib/canvas-utils";
 
 type DragMode = "none" | "create" | "move" | "resize" | "pan";
 type ResizeHandle = "nw" | "ne" | "sw" | "se" | null;
@@ -38,10 +44,8 @@ export function Canvas() {
   const [isSpacePressed, setIsSpacePressed] = useState(false);
 
   const screenToCanvas = useCallback(
-    (screenX: number, screenY: number): Point => ({
-      x: (screenX - offset.x) / zoom,
-      y: (screenY - offset.y) / zoom,
-    }),
+    (screenX: number, screenY: number): Point =>
+      screenToCanvasUtil(screenX, screenY, offset, zoom),
     [zoom, offset],
   );
 
@@ -55,41 +59,13 @@ export function Canvas() {
     [screenToCanvas],
   );
 
-  const getShapeAtPoint = useCallback(
-    (point: Point): Shape | null => {
-      for (let i = shapes.length - 1; i >= 0; i--) {
-        const shape = shapes[i];
-        if (
-          point.x >= shape.x &&
-          point.x <= shape.x + shape.width &&
-          point.y >= shape.y &&
-          point.y <= shape.y + shape.height
-        ) {
-          return shape;
-        }
-      }
-      return null;
-    },
+  const findShapeAtPoint = useCallback(
+    (point: Point): Shape | null => getShapeAtPoint(point, shapes),
     [shapes],
   );
 
   const getResizeHandle = useCallback(
-    (point: Point, shape: Shape): ResizeHandle => {
-      const handleSize = 8 / zoom;
-      const handles: { handle: ResizeHandle; x: number; y: number }[] = [
-        { handle: "nw", x: shape.x, y: shape.y },
-        { handle: "ne", x: shape.x + shape.width, y: shape.y },
-        { handle: "sw", x: shape.x, y: shape.y + shape.height },
-        { handle: "se", x: shape.x + shape.width, y: shape.y + shape.height },
-      ];
-
-      for (const { handle, x, y } of handles) {
-        if (Math.abs(point.x - x) <= handleSize && Math.abs(point.y - y) <= handleSize) {
-          return handle;
-        }
-      }
-      return null;
-    },
+    (point: Point, shape: Shape): ResizeHandle => getResizeHandleUtil(point, shape, zoom),
     [zoom],
   );
 
@@ -115,7 +91,7 @@ export function Canvas() {
           }
         }
 
-        const clickedShape = getShapeAtPoint(pos);
+        const clickedShape = findShapeAtPoint(pos);
         if (clickedShape) {
           setSelectedId(clickedShape.id);
           setDragMode("move");
@@ -143,7 +119,7 @@ export function Canvas() {
       selectedId,
       isSpacePressed,
       getMousePos,
-      getShapeAtPoint,
+      findShapeAtPoint,
       getResizeHandle,
       setSelectedId,
     ],
@@ -237,14 +213,7 @@ export function Canvas() {
     }
 
     if (dragMode === "create" && tempShape) {
-      const normalized: Shape = {
-        ...tempShape,
-        x: tempShape.width < 0 ? tempShape.x + tempShape.width : tempShape.x,
-        y: tempShape.height < 0 ? tempShape.y + tempShape.height : tempShape.y,
-        width: Math.abs(tempShape.width),
-        height: Math.abs(tempShape.height),
-      };
-
+      const normalized = normalizeShape(tempShape);
       if (normalized.width > 5 && normalized.height > 5) {
         addShape(normalized);
       }
