@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 import { temporal } from "zundo";
 import type { Shape, Tool, Point } from "./types";
 
@@ -18,77 +19,90 @@ interface CanvasState {
   setOffset: (offset: Point) => void;
   duplicateSelected: () => void;
   setColor: (color: string) => void;
+  setShapes: (shapes: Shape[]) => void;
 }
 
 export const useCanvasStore = create<CanvasState>()(
-  temporal(
-    (set, get) => ({
-      shapes: [],
-      selectedId: null,
-      tool: "select",
-      zoom: 1,
-      offset: { x: 0, y: 0 },
+  persist(
+    temporal(
+      (set, get) => ({
+        shapes: [],
+        selectedId: null,
+        tool: "select",
+        zoom: 1,
+        offset: { x: 0, y: 0 },
 
-      addShape: (shape) =>
-        set((state) => ({
-          shapes: [...state.shapes, shape],
-          selectedId: shape.id,
-          tool: "select",
-        })),
+        addShape: (shape) =>
+          set((state) => ({
+            shapes: [...state.shapes, shape],
+            selectedId: shape.id,
+            tool: "select",
+          })),
 
-      updateShape: (shape) =>
-        set((state) => ({
-          shapes: state.shapes.map((s) => (s.id === shape.id ? shape : s)),
-        })),
+        updateShape: (shape) =>
+          set((state) => ({
+            shapes: state.shapes.map((s) => (s.id === shape.id ? shape : s)),
+          })),
 
-      deleteShape: (id) =>
-        set((state) => ({
-          shapes: state.shapes.filter((s) => s.id !== id),
-          selectedId: state.selectedId === id ? null : state.selectedId,
-        })),
+        deleteShape: (id) =>
+          set((state) => ({
+            shapes: state.shapes.filter((s) => s.id !== id),
+            selectedId: state.selectedId === id ? null : state.selectedId,
+          })),
 
-      setSelectedId: (id) => set({ selectedId: id }),
+        setSelectedId: (id) => set({ selectedId: id }),
 
-      setTool: (tool) =>
-        set({
-          tool,
-          selectedId: tool !== "select" ? null : get().selectedId,
-        }),
+        setTool: (tool) =>
+          set({
+            tool,
+            selectedId: tool !== "select" ? null : get().selectedId,
+          }),
 
-      setZoom: (zoom) => set({ zoom }),
+        setZoom: (zoom) => set({ zoom }),
 
-      setOffset: (offset) => set({ offset }),
+        setOffset: (offset) => set({ offset }),
 
-      duplicateSelected: () => {
-        const { selectedId, shapes } = get();
-        if (!selectedId) return;
-        const shape = shapes.find((s) => s.id === selectedId);
-        if (!shape) return;
-        const duplicate: Shape = {
-          ...shape,
-          id: crypto.randomUUID(),
-          x: shape.x + 20,
-          y: shape.y + 20,
-        };
-        set((state) => ({
-          shapes: [...state.shapes, duplicate],
-          selectedId: duplicate.id,
-        }));
-      },
-
-      setColor: (color) =>
-        set((state) => {
-          if (!state.selectedId) return state;
-          return {
-            shapes: state.shapes.map((s) =>
-              s.id === state.selectedId ? { ...s, fill: color } : s,
-            ),
+        duplicateSelected: () => {
+          const { selectedId, shapes } = get();
+          if (!selectedId) return;
+          const shape = shapes.find((s) => s.id === selectedId);
+          if (!shape) return;
+          const duplicate: Shape = {
+            ...shape,
+            id: crypto.randomUUID(),
+            x: shape.x + 20,
+            y: shape.y + 20,
           };
-        }),
-    }),
+          set((state) => ({
+            shapes: [...state.shapes, duplicate],
+            selectedId: duplicate.id,
+          }));
+        },
+
+        setColor: (color) =>
+          set((state) => {
+            if (!state.selectedId) return state;
+            return {
+              shapes: state.shapes.map((s) =>
+                s.id === state.selectedId ? { ...s, fill: color } : s,
+              ),
+            };
+          }),
+
+        setShapes: (shapes) => set({ shapes }),
+      }),
+      {
+        partialize: (state) => ({ shapes: state.shapes }),
+        limit: 50,
+      },
+    ),
     {
-      partialize: (state) => ({ shapes: state.shapes }),
-      limit: 50,
+      name: "figma-clone:canvas",
+      partialize: (state) => ({
+        shapes: state.shapes,
+        zoom: state.zoom,
+        offset: state.offset,
+      }),
     },
   ),
 );

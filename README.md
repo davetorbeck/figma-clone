@@ -29,6 +29,7 @@ A minimal Figma-like design tool built with React, TypeScript, and HTML5 Canvas.
 - **Runtime**: [Bun](https://bun.sh/)
 - **Framework**: React 19 + TypeScript
 - **State**: [Zustand](https://zustand.docs.pmnd.rs/) + [zundo](https://github.com/charkour/zundo)
+- **Backend**: [Convex](https://convex.dev/) (self-hosted)
 - **Styling**: Tailwind CSS v4 + shadcn/ui
 - **Build**: Vite
 
@@ -46,6 +47,25 @@ A minimal Figma-like design tool built with React, TypeScript, and HTML5 Canvas.
 bun install
 bun run dev
 ```
+
+## Convex Backend (Self-Hosted)
+
+Canvas state is persisted to a self-hosted Convex backend.
+
+1. Start your [self-hosted Convex backend](https://github.com/get-convex/convex-backend/tree/main/self-hosted)
+
+2. Configure `.env.local`:
+   ```
+   CONVEX_SELF_HOSTED_URL=http://localhost:3210
+   CONVEX_SELF_HOSTED_ADMIN_KEY=your-admin-key
+   VITE_CONVEX_URL=http://localhost:3210
+   ```
+
+3. Run in separate terminals:
+   ```bash
+   bun run dev:backend  # Push schema to Convex
+   bun run dev          # Start Vite
+   ```
 
 ## Scripts
 

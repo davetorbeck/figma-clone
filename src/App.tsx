@@ -3,10 +3,13 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { Canvas } from "@/components/Canvas";
 import { Toolbar } from "@/components/Toolbar";
 import { useCanvasStore } from "@/store";
+import { useConvexSync } from "@/hooks/use-convex-sync";
 
 function App() {
   const { selectedId, setTool, deleteShape, duplicateSelected } = useCanvasStore();
   const { undo, redo } = useCanvasStore.temporal.getState();
+
+  useConvexSync();
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {

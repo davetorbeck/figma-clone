@@ -12,16 +12,42 @@ const createShape = (overrides = {}) => ({
   ...overrides,
 });
 
-describe("duplicateSelected", () => {
-  beforeEach(() => {
-    useCanvasStore.setState({
-      shapes: [],
-      selectedId: null,
-      tool: "select",
-      zoom: 1,
-      offset: { x: 0, y: 0 },
-    });
+const resetStore = () => {
+  useCanvasStore.setState({
+    shapes: [],
+    selectedId: null,
+    tool: "select",
+    zoom: 1,
+    offset: { x: 0, y: 0 },
   });
+};
+
+describe("setShapes", () => {
+  beforeEach(resetStore);
+
+  test("replaces all shapes", () => {
+    const initial = [createShape({ id: "1" })];
+    useCanvasStore.setState({ shapes: initial });
+
+    const newShapes = [createShape({ id: "2" }), createShape({ id: "3" })];
+    useCanvasStore.getState().setShapes(newShapes);
+
+    expect(useCanvasStore.getState().shapes).toHaveLength(2);
+    expect(useCanvasStore.getState().shapes[0].id).toBe("2");
+    expect(useCanvasStore.getState().shapes[1].id).toBe("3");
+  });
+
+  test("clears shapes with empty array", () => {
+    useCanvasStore.setState({ shapes: [createShape()] });
+
+    useCanvasStore.getState().setShapes([]);
+
+    expect(useCanvasStore.getState().shapes).toHaveLength(0);
+  });
+});
+
+describe("duplicateSelected", () => {
+  beforeEach(resetStore);
 
   test("creates copy offset by 20px and selects it", () => {
     const shape = createShape();
@@ -43,15 +69,7 @@ describe("duplicateSelected", () => {
 });
 
 describe("deleteShape", () => {
-  beforeEach(() => {
-    useCanvasStore.setState({
-      shapes: [],
-      selectedId: null,
-      tool: "select",
-      zoom: 1,
-      offset: { x: 0, y: 0 },
-    });
-  });
+  beforeEach(resetStore);
 
   test("clears selectedId when deleting selected shape", () => {
     const shape = createShape();
@@ -75,15 +93,7 @@ describe("deleteShape", () => {
 });
 
 describe("setColor", () => {
-  beforeEach(() => {
-    useCanvasStore.setState({
-      shapes: [],
-      selectedId: null,
-      tool: "select",
-      zoom: 1,
-      offset: { x: 0, y: 0 },
-    });
-  });
+  beforeEach(resetStore);
 
   test("updates fill of selected shape only", () => {
     const shapes = [createShape({ id: "1", fill: "#f00" }), createShape({ id: "2", fill: "#0f0" })];
