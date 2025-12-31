@@ -1,0 +1,85 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: hsl(220 23% 95%);
+  --color-foreground: hsl(234 16% 35%);
+  --color-card: hsl(220 22% 92%);
+  --color-card-foreground: hsl(234 16% 35%);
+  --color-popover: hsl(220 22% 92%);
+  --color-popover-foreground: hsl(234 16% 35%);
+  --color-primary: hsl(266 85% 58%);
+  --color-primary-foreground: hsl(220 23% 95%);
+  --color-secondary: hsl(223 16% 83%);
+  --color-secondary-foreground: hsl(234 16% 35%);
+  --color-muted: hsl(225 14% 77%);
+  --color-muted-foreground: hsl(233 10% 47%);
+  --color-accent: hsl(227 12% 71%);
+  --color-accent-foreground: hsl(234 16% 35%);
+  --color-destructive: hsl(347 87% 44%);
+  --color-destructive-foreground: hsl(220 23% 95%);
+  --color-border: hsl(225 14% 77%);
+  --color-input: hsl(223 16% 83%);
+  --color-ring: hsl(266 85% 58%);
+  --color-chart-1: hsl(347 87% 44%);
+  --color-chart-2: hsl(109 58% 40%);
+  --color-chart-3: hsl(220 91% 54%);
+  --color-chart-4: hsl(35 77% 49%);
+  --color-chart-5: hsl(22 99% 52%);
+
+  --color-sidebar: hsl(220 22% 92%);
+  --color-sidebar-foreground: hsl(234 16% 35%);
+  --color-sidebar-primary: hsl(266 85% 58%);
+  --color-sidebar-primary-foreground: hsl(220 23% 95%);
+  --color-sidebar-accent: hsl(223 16% 83%);
+  --color-sidebar-accent-foreground: hsl(234 16% 35%);
+  --color-sidebar-border: hsl(225 14% 77%);
+  --color-sidebar-ring: hsl(266 85% 58%);
+}
+
+.dark {
+  --color-background: hsl(240 21% 15%);
+  --color-foreground: hsl(226 64% 88%);
+  --color-card: hsl(240 21% 12%);
+  --color-card-foreground: hsl(226 64% 88%);
+  --color-popover: hsl(240 21% 12%);
+  --color-popover-foreground: hsl(226 64% 88%);
+  --color-primary: hsl(267 84% 81%);
+  --color-primary-foreground: hsl(240 21% 15%);
+  --color-secondary: hsl(237 16% 23%);
+  --color-secondary-foreground: hsl(226 64% 88%);
+  --color-muted: hsl(234 13% 31%);
+  --color-muted-foreground: hsl(228 24% 72%);
+  --color-accent: hsl(233 12% 39%);
+  --color-accent-foreground: hsl(226 64% 88%);
+  --color-destructive: hsl(343 81% 75%);
+  --color-destructive-foreground: hsl(240 21% 15%);
+  --color-border: hsl(234 13% 31%);
+  --color-input: hsl(237 16% 23%);
+  --color-ring: hsl(267 84% 81%);
+  --color-chart-1: hsl(343 81% 75%);
+  --color-chart-2: hsl(115 54% 76%);
+  --color-chart-3: hsl(217 92% 76%);
+  --color-chart-4: hsl(41 86% 83%);
+  --color-chart-5: hsl(23 92% 75%);
+
+  --color-sidebar: hsl(240 21% 12%);
+  --color-sidebar-foreground: hsl(226 64% 88%);
+  --color-sidebar-primary: hsl(267 84% 81%);
+  --color-sidebar-primary-foreground: hsl(240 21% 15%);
+  --color-sidebar-accent: hsl(237 16% 23%);
+  --color-sidebar-accent-foreground: hsl(226 64% 88%);
+  --color-sidebar-border: hsl(234 13% 31%);
+  --color-sidebar-ring: hsl(267 84% 81%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
